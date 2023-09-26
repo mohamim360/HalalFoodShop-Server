@@ -12,6 +12,7 @@ const cors = require("cors");
 
 const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/user");
+const adminRoutes = require("./routes/admin");
 
 const app = express();
 
@@ -20,7 +21,8 @@ app.use(bodyParser.json());
 app.use(cors());
 
 app.use("/auth", authRoutes);
-app.use("/user", userRoutes);
+app.use("/admin/user", userRoutes);
+app.use("/admin/product", adminRoutes);
 
 mongoose
   .connect(
