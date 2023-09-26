@@ -2,36 +2,46 @@ const User = require("../models/user");
 
 const bcrypt = require("bcryptjs");
 
-const jwt = require('jsonwebtoken');
+const jwt = require("jsonwebtoken");
 
 exports.postLogin = (req, res, next) => {
-	const email = req.body.email;
+  const email = req.body.email;
   const password = req.body.password;
 
-	let loadedUser;
+  let loadedUser;
   User.findOne({ email: email })
-    .then(user => {
+    .then((user) => {
       if (!user) {
-        return res.status(400).json({ message: "user with this email can not be found" });
+        return res
+          .status(400)
+          .json({ message: "user with this email can not be found" });
       }
       loadedUser = user;
       return bcrypt.compare(password, user.password);
     })
-    .then(isEqual => {
+    .then((isEqual) => {
       if (!isEqual) {
         return res.status(400).json({ message: "Invalid email or password." });
       }
+      console.log(loadedUser.role);
       const token = jwt.sign(
         {
           email: loadedUser.email,
-          userId: loadedUser._id.toString()
+          userId: loadedUser._id.toString(),
+					userRole: loadedUser.role
         },
         process.env.JWT_SECRET,
-        { expiresIn: '1h' }
+        { expiresIn: "1h" }
       );
-      res.status(200).json({ token: token, userId: loadedUser._id.toString() });
-    })
-}
+      res
+        .status(200)
+        .json({
+          token: token,
+          userId: loadedUser._id.toString(),
+       
+        });
+    });
+};
 
 exports.postSignUp = (req, res, next) => {
   const email = req.body.email;
@@ -48,6 +58,7 @@ exports.postSignUp = (req, res, next) => {
         const user = new User({
           name: name,
           email: email,
+          role: "User",
           password: hashedPassword,
           cart: { items: [] },
         });
