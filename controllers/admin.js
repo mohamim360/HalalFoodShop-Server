@@ -80,3 +80,17 @@ exports.putEditProduct = (req, res, next) => {
     })
     .catch((err) => console.log(err));
 };
+
+exports.deleteProduct = (req, res, next) => {
+  const prodId = req.params.prodId; 
+  Product.findByIdAndRemove(prodId)
+    .then((deletedProduct) => {
+      if (!deletedProduct) {
+ 
+        return res.status(404).json({ message: "Product not found" });
+      }
+
+      res.status(200).json({ message: "Product deleted successfully" });
+    })
+
+};
