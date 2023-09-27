@@ -42,18 +42,41 @@ exports.getProducts = (req, res, next) => {
 };
 
 exports.getEditProduct = (req, res, next) => {
-  const editMode = req.query.edit;
-	console.log(editMode);
-  if (editMode) {
-    const prodId = req.params.prodId;
-		console.log(prodId);
-    Product.findById(prodId)
-      .then((product) => {
-        res.status(200).json({
-          product: product,
-          editing: editMode,
-        });
-      })
-      .catch((err) => console.log(err));
-  }
+  const prodId = req.params.prodId;
+  console.log(prodId);
+  Product.findById(prodId)
+    .then((product) => {
+      res.status(200).json({
+        product: product,
+      });
+    })
+    .catch((err) => console.log(err));
+};
+
+exports.putEditProduct = (req, res, next) => {
+
+  const prodId = req.params.prodId;
+  console.log(prodId);
+  const updatedCategory = req.body.category;
+  const updatedQuantity = req.body.quantity;
+  const updatedName = req.body.name;
+  const updatedPrice = req.body.price;
+  const updatedDesc = req.body.description;
+
+  Product.findById(prodId)
+    .then((product) => {
+      product.name = updatedName;
+      product.price = updatedPrice;
+      product.description = updatedDesc;
+      product.quantity = updatedQuantity;
+      product.category = updatedCategory;
+      return product.save();
+    })
+    .then((result) => {
+      console.log("UPDATED PRODUCT!");
+      res.status(201).json({
+        alert: "Updated Product",
+      });
+    })
+    .catch((err) => console.log(err));
 };
