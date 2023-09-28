@@ -14,6 +14,8 @@ const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/user");
 const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
+const isAuth = require("./middleware/isAuth");
+const User = require("./models/user");
 
 const app = express();
 
@@ -24,14 +26,12 @@ app.use(cors());
 app.use("/auth", authRoutes);
 app.use("/admin/user", userRoutes);
 app.use("/admin/product", adminRoutes);
-app.use("/shop",shopRoutes)
+app.use("/shop", shopRoutes);
 
 mongoose
-  .connect(
-    process.env.DB_URI
-  )
+  .connect(process.env.DB_URI)
   .then((result) => {
-    console.log('connected');
+    console.log("connected");
     app.listen(5000);
   })
   .catch((err) => {

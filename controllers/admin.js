@@ -20,6 +20,7 @@ exports.postAddProduct = (req, res, next) => {
     .save()
     .then((result) => {
       console.log("Created Product");
+
       res.status(201).json({
         alert: "Created Product",
       });
