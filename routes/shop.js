@@ -12,4 +12,11 @@ router.post("/cart", isAuth, userData, shopController.postCart);
 
 router.get("/cart", isAuth, userData, shopController.getCart);
 
+router.delete(
+  "/cart/delete-cart/:prodId",
+  isAuth,
+  userData,
+  shopController.deleteCartProduct
+);
+
 module.exports = router;

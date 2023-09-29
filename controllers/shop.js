@@ -37,3 +37,13 @@ exports.postCart = (req, res, next) => {
       res.status(200).json({ message: "Product added to cart successfully" });
     });
 };
+
+exports.deleteCartProduct = (req, res, next) => {
+  const prodId = req.params.prodId;
+  req.user
+    .removeFromCart(prodId)
+    .then(result => {
+      res.status(200).json({ message: "Product deleted from cart successfully" });;
+    })
+    .catch(err => console.log(err));
+};
