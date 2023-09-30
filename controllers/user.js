@@ -1,4 +1,3 @@
-
 const User = require("../models/user");
 
 exports.getUsers = (req, res, next) => {
@@ -10,7 +9,7 @@ exports.getUsers = (req, res, next) => {
 };
 
 exports.getUser = (req, res, next) => {
-	const userId = req.params.userId;
+  const userId = req.params.userId;
   User.findById(userId).then((user) => {
     res.status(200).json({
       user: user,
@@ -21,8 +20,8 @@ exports.getUser = (req, res, next) => {
 exports.updateUserRole = (req, res, next) => {
   const userId = req.params.userId;
   const { role } = req.body;
-	console.log(userId,role);
-  User
+  console.log(userId, role);
+  User.findById(userId)
     .then((user) => {
       if (!user) {
         return res.status(404).json({ message: "User not found" });
@@ -44,15 +43,12 @@ exports.updateUserRole = (req, res, next) => {
 };
 
 exports.deleteUser = (req, res, next) => {
-  const userId = req.params.userId; 
-  User.findByIdAndRemove(userId)
-    .then((deletedUser) => {
-      if (!deletedUser) {
- 
-        return res.status(404).json({ message: "User not found" });
-      }
+  const userId = req.params.userId;
+  User.findByIdAndRemove(userId).then((deletedUser) => {
+    if (!deletedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
 
-      res.status(200).json({ message: "User deleted successfully" });
-    })
-
+    res.status(200).json({ message: "User deleted successfully" });
+  });
 };
