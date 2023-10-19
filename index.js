@@ -7,12 +7,13 @@ const mongoose = require("mongoose");
 require("dotenv").config(); // Load environment variables
 const cors = require("cors");
 const flash = require("connect-flash");
+const stripe = require("stripe")(process.env.PAYMENT_SECRET_KEY);
 
 // Import routes for different parts of the application
-const authRoutes = require("./routes/auth"); // Authentication routes
-const userRoutes = require("./routes/user"); // User-related routes
-const adminRoutes = require("./routes/admin"); // Admin-related routes
-const shopRoutes = require("./routes/shop"); // Shop-related routes
+const authRoutes = require("./routes/auth");
+const userRoutes = require("./routes/user");
+const adminRoutes = require("./routes/admin");
+const shopRoutes = require("./routes/shop");
 
 // Create an instance of the Express application
 const app = express();
@@ -23,10 +24,26 @@ app.use(cors()); // Enable Cross-Origin Resource Sharing (CORS)
 app.use(flash()); // Flash messages support
 
 // Define route handlers for different parts of the application
-app.use("/auth", authRoutes); // Routes related to authentication
-app.use("/admin/user", userRoutes); // Routes for admin users
-app.use("/admin/product", adminRoutes); // Routes for admin products
-app.use("/shop", shopRoutes); // Routes for the shop
+app.use("/auth", authRoutes);
+app.use("/admin/user", userRoutes);
+app.use("/admin/product", adminRoutes);
+app.use("/shop", shopRoutes);
+
+//create payment intent
+app.post("/create-payment-intent", async (req, res) => {
+  const { price } = req.body;
+  const amount = price * 100;
+
+  const paymentIntent = await stripe.paymentIntents.create({
+    amount: amount,
+    currency: "usd",
+    payment_method_types: ["card"],
+  });
+
+  res.send({
+    clientSecret: paymentIntent.client_secret,
+  });
+});
 
 // Connect to the MongoDB database using the provided DB URI
 mongoose
