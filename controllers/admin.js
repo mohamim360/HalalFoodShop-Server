@@ -2,15 +2,19 @@ const Product = require("../models/product");
 
 //adding a new product
 exports.postAddProduct = (req, res, next) => {
+
+
   const name = req.body.name;
+  const imageUrl = req.file.path;
   const price = req.body.price;
   const category = req.body.category;
   const quantity = req.body.quantity;
   const description = req.body.description;
-
+  console.log(imageUrl);
   // Creating a new Product object with the provided data
   const product = new Product({
     name: name,
+    imageUrl: imageUrl,
     price: price,
     description: description,
     quantity: quantity,
@@ -102,14 +106,13 @@ exports.deleteProduct = (req, res, next) => {
   const prodId = req.params.prodId;
 
   // Finding and removing a product by its ID
-  Product.findByIdAndRemove(prodId)
-    .then((deletedProduct) => {
-      if (!deletedProduct) {
-        // If the product wasn't found, send a 404 response
-        return res.status(404).json({ message: "Product not found" });
-      }
+  Product.findByIdAndRemove(prodId).then((deletedProduct) => {
+    if (!deletedProduct) {
+      // If the product wasn't found, send a 404 response
+      return res.status(404).json({ message: "Product not found" });
+    }
 
-      // Sending a response indicating successful deletion
-      res.status(200).json({ message: "Product deleted successfully" });
-    });
+    // Sending a response indicating successful deletion
+    res.status(200).json({ message: "Product deleted successfully" });
+  });
 };

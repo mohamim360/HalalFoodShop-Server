@@ -8,6 +8,7 @@ require("dotenv").config(); // Load environment variables
 const cors = require("cors");
 const flash = require("connect-flash");
 const stripe = require("stripe")(process.env.PAYMENT_SECRET_KEY);
+const multer = require("multer");
 
 // Import routes for different parts of the application
 const authRoutes = require("./routes/auth");
@@ -17,6 +18,16 @@ const shopRoutes = require("./routes/shop");
 
 // Create an instance of the Express application
 const app = express();
+
+const fileStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'images');
+  },
+  filename: (req, file, cb) => {
+    cb(null, `${Date.now()}_${file.originalname}` );
+  }
+});
+app.use(multer({  storage: fileStorage, }).single("image"));
 
 // Middleware setup
 app.use(bodyParser.json()); // Parse JSON data in requests
